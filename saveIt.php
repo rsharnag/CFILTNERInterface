@@ -14,16 +14,24 @@ function replace_match($matches){
     $t = preg_replace('|\s|','__',$matches[2]);
     return " ".$t.'$$'.$matches[1]." ";
 }
+function splitIt($s){ 					//FUNCTION TO SPLIT OUR SENTENCES, EVEN COMPLEX SENTENCES WITH BLANKS ETC.
+    $arr = array('.',',');
+    //$s = str_replace($arr," ",$s);
+    $s = preg_replace("/( )+/", " ", $s);
+    $s = preg_replace("/^( )+/", "", $s);
+    $s = preg_replace("/( )+$/", "", $s);
+    $tokens = explode(" ",$s);
+    return $tokens;
+}
 function parse_sent($sent){
     $res_word = array();
     $res_tag = array();
     $pattern = '|<span.*?title="(.*?)".*?>(.*?)</span>|';
     $parsed_sent = preg_replace_callback($pattern,"replace_match", $sent);
+    $words = splitIt($parsed_sent) ;
 
-    $words = array_filter(explode(' ',$parsed_sent)) ;
     for($i=0;$i<count($words);$i++){
         $l = explode("$$",$words[$i]);
-        $tag="";
         if (count($l)==2){
             array_push($res_word,$l[0]);
             array_push($res_tag,$l[1]);
@@ -44,18 +52,17 @@ $ssid = $_POST['sid'];
 
 $ssid= $_POST['sid'];
 $tsentence= $_POST['tsentence'];
-//echo $tsentence."<br/>";
+
 $skip = $_POST['skip'];
 if($tsentence!=null and $tsentence!=''){
     list($tsent,$tag_list) = parse_sent($tsentence);
     //Update new sentence
     $nsent = mysql_real_escape_string(implode(" ",$tsent));
-
     $query = "UPDATE `".$username."sentences` SET `mod_sent`='".$nsent."' WHERE `sent_id`='".$ssid."'";
     $res1 = mysql_query($query) or die(mysql_error());
 
     $query="DELETE FROM `".$username."nertag` WHERE sent_id=".$ssid;
-//    echo "<br/>".$query;
+
     mysql_query($query);
 //    print_r($tag_list);
     for($i=0;$i<count($tag_list);$i++){
@@ -115,6 +122,3 @@ if($tsentence!=null and $tsentence!=''){
 mysql_close($con);
 ?>
 
-<script type='text/javascript'>
-//window.close();
-</script>

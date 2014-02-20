@@ -178,13 +178,13 @@ $(document).ready(function(){
 			});
 		});
 	});	
-$(document).ready(function(){
-			$(document).on('click', '#Next', function(event) {     
-				event.preventDefault();   
-				var nextval = $("#nextval").val();
-				window.location = '?offset=' + nextval;
-			});
-		});
+//$(document).ready(function(){
+//			$(document).on('click', '#Next', function(event) {
+//				event.preventDefault();
+//				var nextval = $("#nextval").val();
+//				window.location = '?offset=' + nextval;
+//			});
+//		});
 $(document).ready(function(){
 			$(document).on('click', '#Next2', function(event) {        
 				event.preventDefault();

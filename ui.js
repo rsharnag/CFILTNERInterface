@@ -53,7 +53,7 @@ function unSetTag(){
         bootbox.alert("Please select the tagged word first!");
     }else{
         var content = document.getElementById("tsentence").innerHTML;
-        var regex = new RegExp("\<span .*?\>.*?"+sel.toString()+".*?\</span\>","g");
+        var regex = new RegExp('\<span [^\>]*?\>'+sel.toString()+"\</span\>","g");
         document.getElementById("tsentence").innerHTML=content.replace(regex,sel.toString());
 
     }

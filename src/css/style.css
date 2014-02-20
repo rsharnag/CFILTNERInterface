@@ -58,6 +58,22 @@ clear:both;
 height:auto;
 overflow-y:auto;
 }
+.fixedexp{
+    background-color:#00FFFF;
+    color:#0000e8;
+}
+.compnoun{
+    color:#ac0ae2;
+    background-color:#f1ccfd;
+}
+.conjverb{
+    background-color:#ffff00;
+    color:#c7254e;
+}
+.compverb{
+    color:#6E6E6E;
+    background-color:#dcdcdc;
+}
 #transresults {
 //border-top:1px solid black;
 max-height:300px;

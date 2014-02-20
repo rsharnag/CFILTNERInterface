@@ -50,13 +50,19 @@ $stat = $info2->status;
         <li><a onmousedown="setTag('person')" onclick="">Person</a> </li>
         <li><a onmousedown="setTag('location')" onclick="">Location</a> </li>
         <li><a onmousedown="setTag('organization')" onclick="">Organization</a> </li>
+        <li><a onmousedown="setTag('fixedexp')" onclick="">Fixed Expression</a> </li>
+        <li><a onmousedown="setTag('compnoun')" onclick="">Compound Noun</a> </li>
+        <li><a onmousedown="setTag('conjverb')" onclick="">Conjunct Verb</a> </li>
+        <li><a onmousedown="setTag('compverb')" onclick="">Compound Verb</a> </li>
+
+
         <li><a onmousedown="unSetTag()" onclick="">Clear tag</a> </li>
-        <li><a onmousedown="GetSelectedText()" onclick="showtransresults()">Search in Dictionary below</a></li>
-        <li><a onmousedown="GetWordnetWord()" onclick="shabdkoshSearch()">Search in Shabdkosh</a></li>
-        <li><a onmousedown="GetWordnetWord()" onclick="HWordnetSearch()">Search in Hindi Wordnet</a></li>
-        <li><a onmousedown="GetWordnetWord()" onclick="MWordnetSearch()">Search in Marathi Wordnet</a></li>
-        <li><a onmousedown="GetWordnetWord()" onclick="GoogleTranslateSearchAUTOEN()">Translate using Google</a></li>
-        <li><a onmousedown="GetWordnetWord()" onclick="GoogleSearch()">Search on Google</a></li>
+<!--        <li><a onmousedown="GetSelectedText()" onclick="showtransresults()">Search in Dictionary below</a></li>-->
+<!--        <li><a onmousedown="GetWordnetWord()" onclick="shabdkoshSearch()">Search in Shabdkosh</a></li>-->
+<!--        <li><a onmousedown="GetWordnetWord()" onclick="HWordnetSearch()">Search in Hindi Wordnet</a></li>-->
+<!--        <li><a onmousedown="GetWordnetWord()" onclick="MWordnetSearch()">Search in Marathi Wordnet</a></li>-->
+<!--        <li><a onmousedown="GetWordnetWord()" onclick="GoogleTranslateSearchAUTOEN()">Translate using Google</a></li>-->
+<!--        <li><a onmousedown="GetWordnetWord()" onclick="GoogleSearch()">Search on Google</a></li>-->
     </ul>
 
     <!--GOOGLE TRANSLITERATE API SCRIPT-->
@@ -157,11 +163,12 @@ $stat = $info2->status;
                 var nextval = $("#nextval").val();
                 var ssentence = $("#ssentence").val();
                 var tsentence = $("#tsentence").html();
+
                 $.ajax({
                     type: "POST",
                     url: "saveIt.php",
                     data: "sid=" + ssid + "&tsentence=" + tsentence,
-                    success: function(){window.location = '?offset=' + nextval;}
+                    success: function(res){window.location = '?offset=' + nextval;}
                 });
             });
         });
@@ -180,7 +187,7 @@ $stat = $info2->status;
     mb_internal_encoding("UTF-8");
     function splitIt($s){ 					//FUNCTION TO SPLIT OUR SENTENCES, EVEN COMPLEX SENTENCES WITH BLANKS ETC.
         $arr = array('.',',');
-        $s = str_replace($arr," ",$s);
+        //$s = str_replace($arr," ",$s);
         $s = preg_replace("/( )+/", " ", $s);
         $s = preg_replace("/^( )+/", "", $s);
         $s = preg_replace("/( )+$/", "", $s);
@@ -230,7 +237,8 @@ $stat = $info2->status;
             </li>
             <li><a href="skipped.php">View Skipped</a></li>
             <li><a onclick = "window.open('about.html','About Tool','location=no,scrollbars=yes,height=600,width=600')" href="javascript:void(0)">About Tool</a></li>
-            <li><a onclick = "window.open('help.html','About Tool','location=no,scrollbars=yes,height=600,width=600')" href="javascript:void(0)">Help & FAQ</a></li>
+            <li><a onclick = "window.open('help.html','About Tool','location=no,scrollbars=yes,height=600,width=800')" href="javascript:void(0)">Help & FAQ</a></li>
+            <li><a onclick = "window.open('https://github.com/rsharnag/CFILTNERInterface/issues','Report issue','location=no,scrollbars=yes,height=768,width=1024')" href="javascript:void(0)">Report Bug</a></li>
             <li class="navbar-right" ><a href="./admin/logout.php">Logout</a></li>
         </ul>
     </center>
@@ -275,15 +283,18 @@ if($stat!=9){
             //Creating tag map
 
             //Parsing target sentence
-            $words = array_filter(explode(" ",$tsent));
+            $words = splitIt($tsent);
             $query = 'SELECT  `position`, `level1` as "tag" FROM `'.$username.'nertag` a,`tags` b WHERE a.tag_id=b.tag_id and `sent_id`="'.$currid.'"' ;
             $res = mysql_query($query) or die(mysql_error());
             while($row = mysql_fetch_array($res)){
                 $target = $words[$row[0]];
+                $target = implode(" ",explode("__",$target));
                 $htmltag = '<span title="'.$row[1].'" class="'.$row[1].'">'.$target.'</span>';
                 $words[$row[0]]=$htmltag;
             }
             $tsentence = implode(" ",$words);
+        }else{
+            $tsentence=$sentence;
         }
 //        $result0 = mysql_query("select count(*) from ".$username."source") or die(mysql_error());
 //        $result1 = mysql_query("select * from ".$username."source where sid=".$currid) or die(mysql_error());
