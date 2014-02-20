@@ -1,0 +1,264 @@
+<?/*////////////////////////////////////////////////////////////////////////////////////////
+		$con2=mysql_connect("10.144.22.105", "dipak", "tmp123") or die(mysql_error());
+		mysql_select_db("eng_hin_dict") or die(mysql_error());
+		$resultTranslate = mysql_query("SELECT * FROM dictx WHERE uw_head = '".$splitssentence[0]."'") or die(mysql_error());
+		$countResult = mysql_num_rows($resultTranslate);
+		
+		print "<hr>";
+	
+		print "<table width=100% cellpadding=\"3\"> \n";
+		
+		if($countResult > 0)
+		{
+			$row_num = 0;
+			while($row_num < $countResult) 
+			{
+				$id[$row_num] = mysql_result($resultTranslate,$row_num,"id");
+				$hw_iitk[$row_num] = mysql_result($resultTranslate,$row_num,"hw_iitk");
+				$hw_uni[$row_num] = mysql_result($resultTranslate,$row_num,"hw_uni");
+				$hw_uni_full[$row_num] = mysql_result($resultTranslate,$row_num,"hw_uni_full");
+				$uw_head[$row_num] = mysql_result($resultTranslate,$row_num,"uw_head");
+				$uw_restrict[$row_num] = mysql_result($resultTranslate,$row_num,"uw_restrict");
+				$attrib[$row_num] = mysql_result($resultTranslate,$row_num,"attrib");
+				$lang_code[$row_num] = mysql_result($resultTranslate,$row_num,"lang_code");
+				$priority[$row_num] = mysql_result($resultTranslate,$row_num,"priority");
+				$freq[$row_num] = mysql_result($resultTranslate,$row_num,"freq");
+				$gloss[$row_num] = mysql_result($resultTranslate,$row_num,"gloss");
+				$example[$row_num] = mysql_result($resultTranslate,$row_num,"example");
+				$row_num++;
+			}
+$count2=$countResult;
+$noun=0;$adj=0;$adv=0;$verb=0;$others=0;
+while($count2>=0)
+{
+	if ( strpos($attrib[$count2],"N") === 0){
+		$noun=1;
+	}
+	if ( strpos($attrib[$count2],"ADJ") === 0){
+		$adj=1;
+	}
+	if ( strpos($attrib[$count2],"ADV") === 0){
+		$adv=1;
+	}
+	if ( strpos($attrib[$count2],"V") === 0){
+		$verb=1;
+	}
+	if (
+			(!(strpos($attrib[$count2],"N") === 0)) and
+	        (!(strpos($attrib[$count2],"V") === 0)) and
+			(!(strpos($attrib[$count2],"ADJ") === 0)) and
+	        (!(strpos($attrib[$count2],"ADV") === 0)) and
+	        (($attrib[$count2]) != "")
+	   ){	
+		   $others=1;	
+	}
+	   
+	$count2--;
+}
+////////////////////////////////////////////////////////////////
+// this function will print the dictionary entry... a row in 3 columns .. flag is used to alternate the color of the rows
+function print_entry($hw_iitk, $hw_uni, $hw_uni_full, $uw_head, $uw_restrict, $attributes, $lang_code, $freq, $priority, $gloss, $example, $index, $id, $flag )
+{
+	if ($flag == 0)
+		{
+			print "<tr bgcolor=#F8F8F8>";
+		}
+		else
+		{
+			print "<tr bgcolor=#FFFFFF>";
+		}
+		
+		print "<td valign=top align=right>";
+		print "<b>".$hw_uni_full ."</b><br />";
+		print "<font size=-2 title='Hindi stem in unicode'>".$hw_uni."</font>";
+		//print "<br /><font size=-2 title='Hindi stem in iitk encoding'>".htmlentities($hw_iitk,ENT_QUOTES)."</font>";
+		print "</td>";
+		print "<td>";
+		//print "<font size=-2 title='unique id of this entry'><I>".$id."</I></font><br />";
+		print "<font color=black size=-1 title='Result number'> [<b>".$index."</b>]</font>";
+		print "</td>";
+		print "<td>";
+		print "<font size=+1 title='English word corresponding to the Hindi word'>".htmlentities($uw_head,ENT_QUOTES)."</font><br/>";
+		print "    ";
+                //print "<font color=gray title='The discription that gives unique meaning to the english word'>[".htmlentities($uw_restrict,ENT_QUOTES)."]</font> <br/>";
+                //print "<font color=#ffa000 size=-2 title='List of attributes that describes the Hindi word'>".htmlentities($attributes,ENT_QUOTES)."</font> <br />";
+                if ($gloss != "")
+		{	
+			print "<font color=#008B8B title='meaning of the Hindi word'>  ".htmlentities($gloss,ENT_QUOTES)."</font><br>";
+		}
+		if ($example != "")
+		{
+                	print "<font color=#78AB46 title='example sentence or fragment giving the appropriate usage of the word'><i>".htmlentities($example,ENT_QUOTES)."</i> </font><br>";
+		}
+                //print "<font color=black size=-3>[";
+                //print " <font title='Language code(H for hindi)'>".$lang_code."</font>,";
+                //print " <font title='frequency of usage of the Hindi word'>".$freq."</font>,";
+                //print " <font title='Priority of the word'>".$priority."</font>]";
+                //print "</font>";
+
+		print "</td></tr> \n";
+		
+
+}
+
+
+
+
+
+// this function will replace the qualifier of restriction field in the UW of dictionary
+function describe($restriction)
+{
+    if ($restriction != "")
+	{	
+    	    //arr = explode(restriction,'>');
+	}
+    else
+	{
+	   return ""; 
+	}
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+			$i = 0;
+			$flag=0; // toggle flag 0 - 1
+	
+
+			if ($noun!=0){
+				print "<tr bgcolor='#202020'>";
+				print "<td colspan=3 valign=top align=left><font color=white>Noun Senses found:</font>";
+				print "</td></tr> \n";
+			}
+	        //
+	        while($i < $countResult)
+			{	
+				if ( strpos($attrib[$i],"N") === 0){
+					print_entry($hw_iitk[$i], $hw_uni[$i], $hw_uni_full[$i], $uw_head[$i], $uw_restrict[$i], $attrib[$i], $lang_code[$i], $freq[$i], $priority[$i], $gloss[$i], $example[$i],  $i+1 ,$id[$i] , $flag);
+					if ($flag == 0)
+					{
+						$flag = 1;
+					}
+					else
+					{
+						$flag = 0;
+					}
+				}
+				$i++;
+			}//while
+	
+	
+			$i = 0;
+			$flag=0; // toggle flag 0 - 1
+	
+			if($verb!=0){
+				print "<tr bgcolor='#202020'>";
+				print "<td colspan=3 valign=top align=left><font color=white>Verb Senses found:</font>";
+				print "</td></tr> \n";
+			}
+			while($i < $countResult){	
+				if ( strpos($attrib[$i],"V") === 0){
+					print_entry($hw_iitk[$i], $hw_uni[$i], $hw_uni_full[$i], $uw_head[$i], $uw_restrict[$i], $attrib[$i], $lang_code[$i], $freq[$i], $priority[$i], $gloss[$i], $example[$i],  $i+1 ,$id[$i], $flag);
+					if ($flag == 0)
+					{
+						$flag = 1;
+					}
+					else
+					{
+						$flag = 0;
+					}
+				}
+				$i++;
+			}//while
+	
+	
+			$i = 0;
+			$flag=0; // toggle flag 0 - 1
+	
+   	        
+   	        if($adj!=0){
+				print "<tr bgcolor='#202020'>";
+				print "<td colspan=3 valign=top align=left><font color=white>Adjective Senses found:</font>";
+				print "</td></tr> \n";
+			}
+			while($i < $countResult)
+			{	
+				if ( strpos($attrib[$i],"ADJ") === 0){
+					print_entry($hw_iitk[$i], $hw_uni[$i], $hw_uni_full[$i], $uw_head[$i], $uw_restrict[$i], $attrib[$i], $lang_code[$i], $freq[$i], $priority[$i], $gloss[$i], $example[$i],  $i+1 ,$id[$i], $flag);
+					if ($flag == 0)
+					{
+						$flag = 1;
+					}
+					else
+					{
+						$flag = 0;
+					}
+				}
+				$i++;
+			}//while
+	
+	
+	
+			$i = 0;
+			$flag=0; // toggle flag 0 - 1
+	
+			if($adv!=0){
+				print "<tr bgcolor='#202020'>";
+				print "<td colspan=3 valign=top align=left><font color=white>Adverb Senses found:</font>";
+				print "</td></tr> \n";
+			}
+			while($i < $countResult)
+			{	
+				if ( strpos($attrib[$i],"ADV") === 0){
+					print_entry($hw_iitk[$i], $hw_uni[$i], $hw_uni_full[$i], $uw_head[$i], $uw_restrict[$i], $attrib[$i], $lang_code[$i], $freq[$i], $priority[$i], $gloss[$i], $example[$i],  $i+1, $id[$i], $flag);
+					if ($flag == 0)
+					{
+						$flag = 1;
+					}
+					else
+					{
+						$flag = 0;
+					}
+				}
+				$i++;
+			}//while
+	
+	
+			$i = 0;
+			$flag=0; // toggle flag 0 - 1
+		
+			if($others!=0){
+				print "<tr bgcolor='#202020'>";
+				print "<td colspan=3 valign=top align=left><font color=white>Other Senses found:</font>";
+				print "</td></tr> \n";
+			}
+			while($i < $countResult){
+			if (
+					(!(strpos($attrib[$i],"N") === 0)) and
+	                (!(strpos($attrib[$i],"V") === 0)) and
+					(!(strpos($attrib[$i],"ADJ") === 0)) and
+	                (!(strpos($attrib[$i],"ADV") === 0))
+	           ){
+					print_entry($hw_iitk[$i], $hw_uni[$i], $hw_uni_full[$i], $uw_head[$i], $uw_restrict[$i], $attrib[$i], $lang_code[$i], $freq[$i], $priority[$i], $gloss[$i], $example[$i],  $i+1, $id[$i], $flag);
+					if ($flag == 0)
+					{
+						$flag = 1;
+					}
+					else
+					{
+						$flag = 0;
+					}
+				}
+				$i++;
+			}//while
+	
+	}
+	
+	
+	print "</table>\n";
+	print "<hr>";
+*//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	?>
