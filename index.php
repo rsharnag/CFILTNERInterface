@@ -31,11 +31,23 @@ $stat = $info2->status;
 
     <script type="text/javascript" src="src/js/jquery.js"></script>
     <script type="text/javascript" src="src/js/bootstrap.js"></script>
+    <script type="text/javascript" src="src/js/notify.js.js"></script>
     <script type="text/javascript" src="src/bootstrap-select/bootstrap-select.js"></script>
     <script type="text/javascript" src="src/js/bootbox.js"></script>
     <script type="text/javascript" src="src/js/customJS.js"></script>
     <script type="text/javascript" src="src/js/jquery.ContextMenu.js"></script>
     <script type="text/javascript" src="ui.js"></script>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45742992-1', 'iitb.ac.in');
+        ga('send', 'pageview');
+
+    </script>
 
     <ul id="context-menu-1" class="context-menu">
         <li><a onmousedown="GetSelectedText()" onclick="showtransresults()">Search in Dictionary below</a></li>
@@ -47,13 +59,21 @@ $stat = $info2->status;
         <li><a onmousedown="GetWordnetWord()" onclick="GoogleSearch()">Search on Google</a></li>
     </ul>
     <ul id="context-menu-2" class="context-menu">
-        <li><a onmousedown="setTag('person')" onclick="">Person</a> </li>
-        <li><a onmousedown="setTag('location')" onclick="">Location</a> </li>
-        <li><a onmousedown="setTag('organization')" onclick="">Organization</a> </li>
-        <li><a onmousedown="setTag('fixedexp')" onclick="">Fixed Expression</a> </li>
-        <li><a onmousedown="setTag('compnoun')" onclick="">Compound Noun</a> </li>
-        <li><a onmousedown="setTag('conjverb')" onclick="">Conjunct Verb</a> </li>
-        <li><a onmousedown="setTag('compverb')" onclick="">Compound Verb</a> </li>
+        <?php
+            $availableTags = array();
+            $availableTagId = array();
+            $query = 'SELECT `level1`, `name`  from tags';
+            $res = mysql_query($query) or die(mysql_error());
+            $i=0;
+            while($row = mysql_fetch_array($res)){
+
+                echo '<li><a onmousedown="setTag(\''.$row['level1'].'\')" >'.$row['name'].'</a></li>';
+                $availableTags[$i]=$row['name'];
+                $availableTagId[$i]=$row['level1'];
+                $i++;
+            }
+        ?>
+
 
 
         <li><a onmousedown="unSetTag()" onclick="">Clear tag</a> </li>
@@ -355,8 +375,8 @@ if($stat!=9){
     $ifdataexists = mysql_query("SELECT * from ".$username."sentences");
     if(!isset($word)|| strcmp($word,"null")==0){						// INSIDE THIS IF CONDITION IS THE CONTENT TO BE DISPLAYED NORMALLY FOR VALIDATION
         if(mysql_num_rows($ifdataexists)!=0){
-            echo "<div id=\"content\" style=\"width:100%;height:150px;\">
-				<div class=\"panel panel-default\">
+            echo "<div id=\"content\" style=\"width:100%;height:4.0cm;\">
+				<div class=\"panel panel-default option-panel\">
 					<div class=\"panel-body\">
 						<div id=\"translControl\" style=\"float:right;text-align:right\"></div>
 						<div id=\"userfield1\" style=\"width:39%;text-align:right;float:right\"></div>
@@ -366,7 +386,7 @@ if($stat!=9){
 					</div>
 					</div>
 			
-				<div class=\"panel panel-default\">
+				<div class=\"panel panel-default option-panel\">
 					<div class=\"panel-body\">
 						<div id=\"userfield1\" style=\"width:5%;text-align:left;float:left\">Language: &nbsp;</div>
 
@@ -452,22 +472,21 @@ if($stat!=9){
 			</div>
 		</div>
 	
-	<div id=\"translateBox\" style=\"font-weight:bold\"><font size=+1>Dictionary Suggestions </font><font size=-1>(courtsey of <a href=\"http://www.cfilt.iitb.ac.in/~hdict/webinterface_user/\" target=\"_blank\">English-Hindi Dictionary</a>)<br></font>
+	    <div id=\"translateBox\" style=\"font-weight:bold\"><font size=+1>Tag legend </font>
 		<p></p>
-		<form name=\"form1\" id=\"form1\" onsubmit=\"showtransresults(); return false\">
-			<div style=\"float:right\">
-				<ul class=\"pager\" style=\"margin-bottom:10px;margin-top:10px; padding-top:0px;padding-bottom:10px;\">
-					<li id=\"hideshow\" style=\"margin-right:5px;\"><a style=\"outline:none\">Hide / Show Results</a></li>
-				</ul>
-			</div>
-			<div class=\"formgroup\" style=\"width:350px;float:left;\">
-				<input style=\"size:50px;\" class=\"form-control\" type=\"Text\" id=\"transWord\" name=\"transWord\" placeholder=\"Enter Hindi or English Word\">
-			</div>
-			<button class=\"btn btn-default\" type=\"button\" name=\"submit\" id=\"submit\" onclick=\"showtransresults()\">Search</button>
+		<div  style=\"float:left\;\">";
+
+        for($i=0;$i<count($availableTagId);$i++){
+            echo "<div class=\"legend-label\"><span class=\"".$availableTagId[$i]." legend-span\">".$availableTags[$i]."</span></div>";
+        }
+        echo "</div>";
+    }
+
+
 			
-			";
+
     } // CHECK FOR SEARCH RESULTS PAGE OR OFFSET WISE INDEX DISPLAY IF STATEMENT CLOSED.
-} // CHECK WHETHER THE USER WAS ADMIN IF STATEMENT CLOSED.
+ // CHECK WHETHER THE USER WAS ADMIN IF STATEMENT CLOSED.
 else{
     echo "</div><div id=\"content\" style=\"width:98%;height:25%;margin-left:1%;margin-right:1%;text-align:center\"><h1>Welcome Administrator</h1><br>
 				You can see this window since you have logged on as administrator, on the tool home, 
