@@ -19,6 +19,7 @@
 		
     </head>
     <body>
+        <?php include_once("../analyticstracking.php"); ?>
 		<script src="../src/js/bootstrap.min.js"></script>
 		<div id="wrapper" class="container-fluid" style="width:100%">
 

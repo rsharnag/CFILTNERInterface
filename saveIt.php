@@ -60,6 +60,8 @@ if($tsentence!=null and $tsentence!=''){
     $nsent = mysql_real_escape_string(implode(" ",$tsent));
     $query = "UPDATE `".$username."sentences` SET `mod_sent`='".$nsent."' WHERE `sent_id`='".$ssid."'";
     $res1 = mysql_query($query) or die(mysql_error());
+    $query = "UPDATE user SET `sent_id`='".$ssid."' WHERE  username ='".$username."'";
+    $res1 = mysql_query($query) or die(mysql_error());
 
     $query="DELETE FROM `".$username."nertag` WHERE sent_id=".$ssid;
 

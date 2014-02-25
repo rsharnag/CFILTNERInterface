@@ -183,19 +183,22 @@ $(document).ready(function(){
         bootbox.prompt("Please enter Label name: ", function(result) {
             if (result === null || result === '') {//do nothing
             } else {
+
                 var ssid = $("#ssid").val();
                 var words = result.split(" ");
                 var labelId= "";
                 for(var word in words){
-                    labelId+=word.substr(0,5).toLowerCase();
+                    labelId+=words[word].substr(0,5).toLowerCase();
                 }
+
                 $.ajax({
                     type: "POST",
                     url: "updates.php",
                     data: "labelName=" + result + "&labelId=" + labelId,
                     success: function(res){
+
                         if(res=="Success"){
-                            window.location = '?offset=' + ssid;
+                            window.location = '?offset=' + ssid + '&labelAdded=1';
                         }else{
                             $.notify("Label update failed","error")
                         }

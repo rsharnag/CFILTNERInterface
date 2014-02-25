@@ -57,8 +57,10 @@ function downloadtarget(){ // FUNCTION TO DOWNLOAD TARGET FILE
 }
 function truncateData(){ // FUNCTION TO TRUNCATE DATA
 		$userid=$GLOBALS['username'];
-		$truncateSource = mysql_query("TRUNCATE TABLE ".$userid."source") or die(mysql_error());
-		$truncateTarget = mysql_query("TRUNCATE TABLE ".$userid."target") or die(mysql_error());
+        mysql_query("SET FOREIGN_KEY_CHECKS=0;");
+		$truncateSource = mysql_query("TRUNCATE TABLE ".$userid."nertag") or die(mysql_error());
+		$truncateTarget = mysql_query("TRUNCATE TABLE ".$userid."sentences") or die(mysql_error());
+    mysql_query("SET FOREIGN_KEY_CHECKS=1;");
 }
   if ($_GET['download']=='s') {
     downloadsource();

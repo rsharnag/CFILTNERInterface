@@ -30,8 +30,10 @@ $stat = $info2->status;
 
 
     <script type="text/javascript" src="src/js/jquery.js"></script>
-    <script type="text/javascript" src="src/js/bootstrap.js"></script>
     <script type="text/javascript" src="src/js/notify.js.js"></script>
+    <script type="text/javascript" src="src/js/notify.min.js"></script>
+    <script type="text/javascript" src="src/js/bootstrap.js"></script>
+
     <script type="text/javascript" src="src/bootstrap-select/bootstrap-select.js"></script>
     <script type="text/javascript" src="src/js/bootbox.js"></script>
     <script type="text/javascript" src="src/js/customJS.js"></script>
@@ -193,6 +195,7 @@ $stat = $info2->status;
             });
         });
         $(document).ready(function() {
+            <?php if($_GET['labelAdded']!=null and $_GET['labelAdded']==1) echo "$.notify(\"Label added\",\"success\");"; ?>
             $('.selectpicker').selectpicker({
 
 
@@ -230,7 +233,7 @@ $stat = $info2->status;
 
 
 <body>
-
+<?php include_once('analyticstracking.php');?>
 <div id="wrapper" class="container-fluid" style="width:100%">
 <!--HEADER ABOVE NAVIGATION-->
 <div onclick="javascript:void(0)" style="cursor:pointer;"><?php include('includes/header_ner.php'); ?></div>
@@ -380,7 +383,7 @@ if($stat!=9){
 					<div class=\"panel-body\">
 						<div id=\"translControl\" style=\"float:right;text-align:right\"></div>
 						<div id=\"userfield1\" style=\"width:39%;text-align:right;float:right\"></div>
-						<div id=\"userfield2\" style=\"width:25%;text-align:right;float:right\">Current Sentence: <span class=\"label label-default\">".$sid."</span></div>
+						<div id=\"userfield2\" style=\"width:25%;text-align:center;float:right\">Current Sentence: <span class=\"label label-default\">".$sid."/".$sentencecount."</span></div>
 						<div id=\"userfield\" style=\"width:20%;text-align:left;float:left\">Current User: <span class=\"label label-default\">".$user."</span></div>
 						<br>
 					</div>
@@ -388,19 +391,20 @@ if($stat!=9){
 			
 				<div class=\"panel panel-default option-panel\">
 					<div class=\"panel-body\">
-						<div id=\"userfield1\" style=\"width:5%;text-align:left;float:left\">Language: &nbsp;</div>
+						<!--<div id=\"userfield1\" style=\"width:5%;text-align:left;float:left\"></div>-->
 
 
-						<div id=\"userfield1\" style=\"width:20%;text-align:left;float:left\"><select class=\"selectpicker\" value=\"Select Language\">
+						<div id=\"userfield1\" style=\"width:30%;text-align:left;float:left\">Language: &nbsp;<select class=\"selectpicker\" value=\"Select Language\">
 															  <option value=\"en\">English</option>
 															  <option value=\"hi\">Hindi</option>
 															  <option value=\"mr\">Marathi</option>
 															  </select></div>
-						<div id=\"userfield1\" style=\"width:4%;text-align:left;float:left\">Method:</div>
-						<div id=\"userfield1\" style=\"width:71%;text-align:left;float:left\"><select class=\"selectpicker\" value=\"Select Method\">
+					    <div id=\"userfield1\" style=\"width:30%;text-align:right;float:right\">Method: &nbsp;<select class=\"selectpicker\" value=\"Select Method\">
 															  <option value=\"CRF\">CRF</option>
 															  <option value=\"dp\">Deep Learning</option>
 															  </select></div>
+						<!-- <div id=\"userfield1\" style=\"width:4%;text-align:right;float:right\"</div> -->
+
 						<br>
 					</div>
 					</div>
@@ -472,9 +476,10 @@ if($stat!=9){
 			</div>
 		</div>
 	
-	    <div id=\"translateBox\" style=\"font-weight:bold\"><font size=+1>Tag legend </font>
+	    <div id=\"translateBox\" style=\"font-weight:bold\"><font size=+1>Tag legend </font> <ul id=\"addLabel\" class=\"pager\" style=\"width:10%;float:right;\" ><li style=\"float:right\" ><a href=\"javascript:void(0)\" style=\"outline:none\">Add new label</a> </li></ul>
+
 		<p></p>
-		<div  style=\"float:left\;\">";
+		<div  style=\"float:left;width:80%;\">";
 
         for($i=0;$i<count($availableTagId);$i++){
             echo "<div class=\"legend-label\"><span class=\"".$availableTagId[$i]." legend-span\">".$availableTags[$i]."</span></div>";

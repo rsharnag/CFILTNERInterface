@@ -35,7 +35,7 @@
     });
     function loadTimer(){
         $(".progress").show();
-        timer= setInterval(function(){progressTimer()},1000);
+        timer= setInterval(function(){progressTimer()},500);
     }
     function progressTimer(){
         var session;
